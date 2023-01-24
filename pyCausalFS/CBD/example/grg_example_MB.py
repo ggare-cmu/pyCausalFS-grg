@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
- @Time    : 2019/11/30 20:03
- @File    : example_MB.py
+ @Time    : 2023/01/24 20:03
+ @File    : example_MB_grg.py
  """
 
 import sys
-sys.path.append("./pyCausalFS")
-sys.path.append("./pyCausalFS/CBD")
+# sys.path.append("./pyCausalFS")
+# sys.path.append("./pyCausalFS/CBD")
 # sys.path.append("../../pyCausalFS")
 # sys.path.append("../CBD")
 
@@ -177,6 +177,64 @@ def example(method, data, list_target, alpha, is_discrete, k=0):
     print("the running time is: " + str(end_time - start_time))
     file.write("the running time is: " + str(end_time - start_time) + "\n")
     file.close()
+
+
+
+
+method_dict = {
+
+                "MMMB": MMMB,
+                "HITON_MB": HITON_MB,
+                "semi_HITON_MB": semi_HITON_MB,
+                "PCMB": PCMB,
+                "IPC_MB": IPC_MB,
+                "GSMB": GSMB,
+                "IAMB": IAMB,
+                "KIAMB": KIAMB,
+                "fast_IAMB": fast_IAMB,
+                "inter_IAMB": inter_IAMB,
+                "IAMBnPC": IAMBnPC,
+                "interIAMBnPC": interIAMBnPC,
+                "STMB": STMB,
+                "BAMB": BAMB,
+                "FBED": FBED,
+                "MBOR": MBOR,
+                "LRH": LRH,
+                "TIE": TIE, 
+                "TIE_p": TIE_p,
+
+            }
+
+
+
+def runClassicalCausalMBDiscovery(method, data, list_target, data_path = None, alpha = 0.01, is_discrete = False, k=0):
+
+    if data is None:
+        print(f"Loading data from : {data_path}")
+        data = pandas.read_csv(data_path)
+
+    MB_dict = {}
+    if method == "KIAMB":
+        start_time = time.process_time()
+        for target in list_target:
+            MB, ci_num = method_dict[method](data, target, alpha, k, is_discrete)
+            MB_dict[target] = MB
+            print("the MB of " + str(target) + " is:" + str(MB))
+        end_time = time.process_time()
+    else:
+        start_time = time.process_time()
+        for target in list_target:
+            MB, ci_num = LRH(data, target, alpha, is_discrete)
+            MB_dict[target] = MB
+            print("the MB of " + str(target) + " is:" + str(MB))
+        end_time = time.process_time()
+
+    run_time = end_time - start_time
+
+
+    return MB_dict, run_time
+
+
 
 
 if __name__ == '__main__':
