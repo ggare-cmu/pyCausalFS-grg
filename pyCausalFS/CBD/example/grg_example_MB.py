@@ -217,6 +217,7 @@ def runClassicalCausalMBDiscovery(method, data, list_target, data_path = None, a
     if method == "KIAMB":
         start_time = time.process_time()
         for target in list_target:
+            print(f"Running method (requires k!) = {method_dict[method]}")
             MB, ci_num = method_dict[method](data, target, alpha, k, is_discrete)
             MB_dict[target] = MB
             print("the MB of " + str(target) + " is:" + str(MB))
@@ -224,7 +225,8 @@ def runClassicalCausalMBDiscovery(method, data, list_target, data_path = None, a
     else:
         start_time = time.process_time()
         for target in list_target:
-            MB, ci_num = LRH(data, target, alpha, is_discrete)
+            print(f"Running method = {method_dict[method]}")
+            MB, ci_num = method_dict[method](data, target, alpha, is_discrete)
             MB_dict[target] = MB
             print("the MB of " + str(target) + " is:" + str(MB))
         end_time = time.process_time()
